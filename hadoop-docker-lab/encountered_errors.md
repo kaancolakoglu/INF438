@@ -1,4 +1,4 @@
-# Resources
+# Errors
 
 Problem:
 
@@ -12,7 +12,7 @@ Job failed with state KILLED due to: REDUCE capability required is more than the
 
 Solution:
 
-- Reduced memory requirements by adding parameters: `-Dmapreduce.map.memory.mb=2048 -Dmapreduce.reduce.memory.mb=2048`
+- Reduced memory requirements by adjusting parameters in environment file: `MAPRED_CONF_mapreduce_map_memory_mb=2048, MAPRED_CONF_mapreduce_reduce_memory_mb=2048,MAPRED_CONF_mapreduce_map_java_opts=-Xmx1536m,MAPRED_CONF_mapreduce_reduce_java_opts=-Xmx1536m`
 
 Problem:
 
