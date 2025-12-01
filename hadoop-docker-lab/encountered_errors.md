@@ -2,20 +2,6 @@
 
 Problem:
 
-- MapReduce job killed due to memory
-
-Error:
-
-```
-Job failed with state KILLED due to: REDUCE capability required is more than the supported max container capability in the cluster. reduceResourceRequest: <memory:8192, vCores:1> maxContainerCapability:<memory:4096, vCores:4>
-```
-
-Solution:
-
-- Reduced memory requirements by adjusting parameters in environment file: `MAPRED_CONF_mapreduce_map_memory_mb=2048, MAPRED_CONF_mapreduce_reduce_memory_mb=2048,MAPRED_CONF_mapreduce_map_java_opts=-Xmx1536m,MAPRED_CONF_mapreduce_reduce_java_opts=-Xmx1536m`
-
-Problem:
-
 - Python scripts not executable in Hadoop Streaming
 
 Error:
@@ -43,3 +29,59 @@ PipeMapRed.waitOutputThreads(): subprocess failed with code 1
 Solution:
 
 - Replaced f-strings with .format() because containers have Python 3.5
+
+Problem:
+
+- ResourceManager container crash loop (exit code 255)
+
+Error:
+
+```
+java.net.UnknownHostException: Invalid host name: local host is: (unknown); destination host is: "resourcemanager":8032
+```
+
+Root Cause:
+
+- Typo in `hadoop.env`: `SSnappyCodec` instead of `SnappyCodec`
+
+Solution:
+
+- Fixed `YARN_CONF_mapred_map_output_compress_codec=org.apache.hadoop.io.compress.SnappyCodec`
+
+Problem:
+
+- MapReduce streaming jobs fail with "command not found" (exit code 127)
+
+Error:
+
+```
+PipeMapRed.waitOutputThreads(): subprocess failed with code 127
+```
+
+Root Cause:
+
+- Python not installed in nodemanager container (bde2020 images are Java-only)
+
+Solution:
+
+- Created `Dockerfile.nodemanager` to install Python 3
+- Updated `docker-compose.yml` to build custom nodemanager image
+
+Problem:
+
+- Reducer2 crashes with exit code 1
+
+Error:
+
+```
+PipeMapRed.waitOutputThreads(): subprocess failed with code 1
+```
+
+Root Cause:
+
+- CSV header row not filtered (starts with `"tripduration"` not `tripduration`)
+- Reducer fails on `int("tripduration")`
+
+Solution:
+
+- Updated header check in all mappers: `line.startswith('"tripduration') or line.startswith('tripduration')`

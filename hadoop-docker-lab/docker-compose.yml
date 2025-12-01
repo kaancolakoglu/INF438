@@ -37,7 +37,9 @@ services :
     env_file:
       - ./hadoop.env
   nodemanager:
-    image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
+    build:
+      context: .
+      dockerfile: Dockerfile.nodemanager
     container_name: nodemanager
     restart: always
     environment:
