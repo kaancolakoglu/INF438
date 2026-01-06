@@ -1,0 +1,32 @@
+1. Afficher toutes les commandes
+'''
+SELECT * FROM "datalake"."orders_lines"; 
+'''
+
+2. Nombre total de commandes
+'''
+SELECT COUNT(*) FROM "datalake"."orders_lines"; 
+'''
+
+3. Répartition des commandes par ville 
+'''
+SELECT city, count(*)
+FROM datalake.orders_lines
+GROUP by city
+'''
+
+4. Chiffre d'affaires par pays 
+'''
+SELECT country, SUM(totalprice) as total_sales
+FROM datalake.orders_lines 
+GROUP BY country
+'''
+
+5. Produits les plus vendus (nombre de commandes)
+'''
+SELECT productname, COUNT(*) as nombre_commandes
+FROM datalake.orders_lines
+GROUP BY productname
+ORDER BY COUNT(*) DESC
+LIMIT 5
+'''
